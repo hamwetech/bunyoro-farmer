@@ -1,0 +1,447 @@
+import json
+import datetime
+from django.shortcuts import render
+from django.shortcuts import render
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.contrib.gis.geos import Point
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import FileUploadParser
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser, FormParser, MultiPartParser, FileUploadParser
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+
+from api.serializers import *
+from system.models import Farmer
+
+
+class AuthenticationView(APIView):
+    @swagger_auto_schema(operation_description="description", request_body=LoginSerializer, responses={200: AuthenticationShemaSerialiser})
+    def post(self, request, format=None):
+        serializer = LoginSerializer(data=request.data)
+        try:
+            if serializer.is_valid():
+                data = request.data
+                username = data.get('username')
+                password = data.get('password')
+                user = authenticate(username=username, password=password)
+                if user:
+                    token = Token.objects.get(user=user)
+                    # if user.farm_assigned_to:
+                    return Response({
+                        "status": "success",
+                        "response": {
+                            "token": token.key,
+                            "user": {
+                                "id": user.id,
+                                "username": user.username,
+                                "name": user.get_full_name() or "",
+                                "email": user.email,
+                            }
+                        }
+                    }, status.HTTP_200_OK)
+                    # return Response({"status": "error", "response": "User is not assigned to any farm"},
+                    #                 status.HTTP_200_OK)
+                return Response({"status": "error", "response": "Username or password incorrect"}, status.HTTP_200_OK)
+        except Exception as err:
+            return Response({"status": "error", "response": "%s" % err}, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RegionViewSet(viewsets.ModelViewSet):
+    serializer_class = RegionSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = Region.objects.all()
+        serializer = RegionSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = District.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = DistrictSerializer(user)
+        return Response(serializer.data)
+
+
+class DistrictViewSet(viewsets.ModelViewSet):
+    serializer_class = DistrictSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = District.objects.all()
+        serializer = DistrictSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = District.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = DistrictSerializer(user)
+        return Response(serializer.data)
+
+
+class UnitViewSet(viewsets.ModelViewSet):
+    serializer_class = UnitSerializer
+    http_method_names = ['retrieve', 'get']
+
+    def get_queryset(self):
+        return Unit.objects.all()
+
+    def list(self, request):
+        queryset = Unit.objects.all()
+        serializer = UnitSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Unit.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = UnitSerializer(user)
+        return Response(serializer.data)
+
+
+class CountyViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for listing or retrieving Breed.
+    """
+    serializer_class = CountySerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = County.objects.all()
+        serializer = CountySerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = County.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = CountySerializer(user)
+        return Response(serializer.data)
+
+
+class SubCountyViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for listing or retrieving Breed.
+    """
+    serializer_class = SubCountySerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = SubCounty.objects.all()
+        serializer = SubCountySerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = SubCounty.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = SubCountySerializer(user)
+        return Response(serializer.data)
+
+
+class ParishViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for listing or retrieving Breed.
+    """
+    serializer_class = ParishSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = Parish.objects.all()
+        serializer = ParishSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Parish.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = ParishSerializer(user)
+        return Response(serializer.data)
+
+
+class VillageViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for listing or retrieving Breed.
+    """
+    serializer_class = VillageSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = Village.objects.all()
+        serializer = VillageSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Village.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = VillageSerializer(user)
+        return Response(serializer.data)
+
+
+class CropViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for listing or retrieving Breed.
+    """
+    serializer_class = CropSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = Crop.objects.all()
+        serializer = CropSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Crop.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = CropSerializer(user)
+        return Response(serializer.data)
+
+
+class ClanViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for listing or retrieving Breed.
+    """
+    serializer_class = ClanSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = Clan.objects.all()
+        serializer = ClanSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Clan.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = ClanSerializer(user)
+        return Response(serializer.data)
+
+
+class CooperativeViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for listing or retrieving Breed.
+    """
+    serializer_class = CooperativeSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = Cooperative.objects.all()
+        serializer = CooperativeSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Cooperative.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = CooperativeSerializer(user)
+        return Response(serializer.data)
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+
+class ProductVariationViewSet(viewsets.ModelViewSet):
+    queryset = ProductVariation.objects.all()
+    serializer_class = ProductVariationSerializer
+
+
+class ProductVariationPriceViewSet(viewsets.ModelViewSet):
+    queryset = ProductVariationPrice.objects.all()
+    serializer_class = ProductVariationPriceSerializer
+
+
+class SupplierViewSet(viewsets.ModelViewSet):
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierSerializer
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
+class OrderItemViewSet(viewsets.ModelViewSet):
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
+
+
+class CollectionViewSet(viewsets.ModelViewSet):
+    queryset = Collection.objects.all()
+    serializer_class = CollectionSerializer
+
+
+class FarmerGroupViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for listing or retrieving Breed.
+    """
+    serializer_class = FarmerGroupSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = FarmerGroup.objects.all()
+        serializer = FarmerGroupSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = FarmerGroup.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = FarmerGroupSerializer(user)
+        return Response(serializer.data)
+
+
+class TitleListView(APIView):
+    def get(self, request):
+        titles = [{'value': key, 'label': value} for key, value in Farmer.TITLE_CHOICES]
+        return Response(titles)
+
+
+class FarmerViewSet(viewsets.ModelViewSet):
+    queryset = Farmer.objects.all()
+    serializer_class = FarmerSerializer
+
+
+class FarmerBulkSyncView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        # Get the farmer JSON part
+        farmer_json = request.data.get('farmer')
+        image_file = request.FILES.get('image')
+
+        if not farmer_json:
+            return Response({"error": "No farmer data provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Load JSON to dict
+        farmer_data = json.loads(farmer_json)
+
+        # Attach image if provided
+        if image_file:
+            farmer_data['image'] = image_file
+
+        # Try to get existing farmer by UUID
+        uuid_value = farmer_data.get('uuid')
+        try:
+            instance = Farmer.objects.get(uuid=uuid_value)
+        except Farmer.DoesNotExist:
+            instance = None
+
+        # Pass instance to serializer for update/create
+        serializer = FarmerSerializer(instance=instance, data=farmer_data)
+        if serializer.is_valid():
+            farmer = serializer.save()
+            farmer.is_synced = True
+            farmer.sync_date_time = datetime.datetime.now()
+            farmer.save()
+            print(farmer.district)
+            return Response({"success": True, "member_id": farmer.member_id})
+        else:
+            return Response({"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ThematicAreaViewSet(viewsets.ModelViewSet):
+    serializer_class = ThematicAreaSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = ThematicArea.objects.all()
+        serializer = ThematicAreaSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = ThematicArea.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = ThematicAreaSerializer(user)
+        return Response(serializer.data)
+
+
+class TrainingSessionViewSet(viewsets.ModelViewSet):
+    serializer_class = TrainingSessionSerializer
+    http_method_names = ['retrieve', 'get', 'post']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = TrainingSession.objects.all()
+        serializer = TrainingSessionSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = TrainingSession.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = TrainingSessionSerializer(user)
+        return Response(serializer.data)
+
+
+class TrainingAttendanceViewSet(viewsets.ModelViewSet):
+    serializer_class = TrainingAttendanceSerializer
+    http_method_names = ['retrieve', 'get', 'post']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = TrainingAttendance.objects.all()
+        serializer = TrainingAttendanceSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = TrainingAttendance.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = TrainingAttendanceSerializer(user)
+        return Response(serializer.data)
+
+
+class ExternalTrainerViewSet(viewsets.ModelViewSet):
+    serializer_class = ExternalTrainerSerializer
+    http_method_names = ['retrieve', 'get']
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        queryset = ExternalTrainer.objects.all()
+        serializer = ExternalTrainerSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = ExternalTrainer.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = ExternalTrainerSerializer(user)
+        return Response(serializer.data)
