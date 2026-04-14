@@ -96,6 +96,7 @@ class TrainingAttendance(TimeStampMixin):
     )
     # Optional: store a reference for offline/manual tracking
     training_reference = models.CharField(max_length=256, null=True, blank=True)
+    is_synced = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'training_attendance'

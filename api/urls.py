@@ -52,6 +52,7 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('titles/', TitleListView.as_view(), name='titles'),
     path('sync-farmers/', FarmerBulkSyncView.as_view(), name='sync-farmers'),
+    path('orders/bulk-create/', OrderCreateView.as_view(), name='order-create'),
     # path('redoc/', TemplateView.as_view(
     #         template_name='api/redoc.html',
     #         extra_context={'schema_url':'openapi-schema'}

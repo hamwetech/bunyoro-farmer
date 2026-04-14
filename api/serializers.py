@@ -1,5 +1,6 @@
-from django.shortcuts import get_object_or_404
 import json
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from drf_yasg import openapi
 
@@ -168,16 +169,47 @@ class ItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = '__all__'
-
-
 class OrderItemSerializer(serializers.ModelSerializer):
+    item_id = serializers.PrimaryKeyRelatedField(
+        source='item', queryset=Item.objects.all(), write_only=True, allow_null=True, required=False
+    )
     class Meta:
         model = OrderItem
-        fields = '__all__'
+        fields = ['item_id', 'quantity', 'unit_price', 'total_price', 'order_reference']
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True)
+    farmer_reference = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Order
+        fields = ['farmer_reference', 'order_reference', 'total_amount', 'order_date', 'items']
+
+    def create(self, validated_data):
+        items_data = validated_data.pop('items')
+
+        with transaction.atomic():
+            # 1. Save or Update the Order based on the reference
+            # Use update_or_create to allow "pushing later" without duplicates
+            farmer = Farmer.objects.get(uuid=validated_data.get('farmer_reference'))
+            validated_data['farmer'] = farmer
+            validated_data.pop('farmer_reference')
+            print(validated_data)
+            order, created = Order.objects.update_or_create(
+                order_reference=validated_data.get('order_reference'),
+                defaults=validated_data
+            )
+
+            # 2. If it's an update, clear old items to avoid duplicates
+            if not created:
+                order.items.all().delete()
+            print(items_data)
+            # 3. Create the items
+            for item_data in items_data:
+                OrderItem.objects.create(order=order, **item_data)
+
+        return order
 
 
 class CollectionSerializer(serializers.ModelSerializer):
@@ -202,6 +234,8 @@ class TrainingAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = TrainingAttendance
         fields = '__all__'
+        validators = []  # optional (prevents unique_together crash)
+
 
 
 class ExternalTrainerSerializer(serializers.ModelSerializer):

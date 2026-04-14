@@ -37,8 +37,8 @@ class ItemAdmin(admin.ModelAdmin):
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 1
-    fields = ("item", "quantity", "unit_price", "price")
-    readonly_fields = ("price",)
+    fields = ("item", "quantity", "unit_price", "total_price")
+    readonly_fields = ("total_price",)
 
 
 # -------------------------
@@ -50,7 +50,7 @@ class OrderAdmin(admin.ModelAdmin):
         "order_reference",
         "farmer",
         "cooperative",
-        "order_price",
+        "total_amount",
         "status",
         "order_date",
         "accept_date",
@@ -65,14 +65,14 @@ class OrderAdmin(admin.ModelAdmin):
                "delivery_reject_reason", "collect_reason", "ship_reason", "order_reference", "status")
     inlines = [OrderItemInline]
 
-    readonly_fields = ("order_reference", "order_price")
+    readonly_fields = ("order_reference", "total_amount")
 
     def save_model(self, request, obj, form, change):
         # Calculate total price if OrderItems exist
         super().save_model(request, obj, form, change)
         total = obj.get_orders().aggregate(
-            total_price=models.Sum('price')
+            total_price=models.Sum('total_price')
         )['total_price'] or 0
-        if obj.order_price != total:
-            obj.order_price = total
+        if obj.total_amount != total:
+            obj.total_amount = total
             obj.save()

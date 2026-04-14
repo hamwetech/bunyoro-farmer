@@ -1,5 +1,6 @@
 import json
 import datetime
+from rest_framework import generics
 from django.shortcuts import render
 from django.shortcuts import render
 from drf_yasg.utils import swagger_auto_schema
@@ -16,6 +17,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
 
 from api.serializers import *
 from system.models import Farmer
@@ -428,6 +430,56 @@ class TrainingAttendanceViewSet(viewsets.ModelViewSet):
         serializer = TrainingAttendanceSerializer(user)
         return Response(serializer.data)
 
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        is_bulk = isinstance(data, list)
+
+        if not is_bulk:
+            data = [data]
+
+        created_objects = []
+
+        for item in data:
+            farmer_ref = item.pop('farmer_reference', None)
+            training_ref = item.pop('training_reference', None)
+
+            #resolve farmer
+            farmer = Farmer.objects.filter(uuid=farmer_ref).first()
+            if not farmer:
+                return Response(
+                    {"error": f"Farmer not found: {farmer_ref}"},
+                    status=400
+                )
+
+            #resolve training session
+            session = TrainingSession.objects.filter(
+                training_reference=training_ref
+            ).first()
+
+            if not session:
+                return Response(
+                    {"error": f"Training not found: {training_ref}"},
+                    status=400
+                )
+
+            item['trainer'] = User.objects.get(pk=item['trainer'])
+
+            #UPSERT (prevents duplicates)
+            item.pop("farmer", None)
+            item.pop("training_session", None)
+            item.pop("id", None)
+
+            obj, created = TrainingAttendance.objects.update_or_create(
+                farmer=farmer,
+                training_session=session,
+                defaults=item
+            )
+
+            created_objects.append(obj)
+
+        serializer = self.get_serializer(created_objects, many=True)
+        return Response(serializer.data, status=201)
+
 
 class ExternalTrainerViewSet(viewsets.ModelViewSet):
     serializer_class = ExternalTrainerSerializer
@@ -445,3 +497,8 @@ class ExternalTrainerViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(queryset, pk=pk)
         serializer = ExternalTrainerSerializer(user)
         return Response(serializer.data)
+
+
+class OrderCreateView(generics.CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer

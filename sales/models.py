@@ -44,7 +44,7 @@ class Order(TimeStampMixin):
     cooperative = models.ForeignKey(Cooperative, null=True, blank=True, on_delete=models.SET_NULL)
     farmer = models.ForeignKey(Farmer, on_delete=models.CASCADE)
     order_reference = models.CharField(max_length=255, blank=True)
-    order_price = models.DecimalField(max_digits=20, decimal_places=2, default=0, blank=True)
+    total_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0, blank=True)
     status = models.CharField(max_length=255, default='PENDING')
     order_date = models.DateTimeField()
     accept_date = models.DateTimeField(null=True, blank=True)
@@ -72,11 +72,12 @@ class Order(TimeStampMixin):
 
 
 class OrderItem(TimeStampMixin):
-    order = models.ForeignKey(Order, blank=True, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, blank=True, on_delete=models.CASCADE, related_name='items',)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
     unit_price = models.DecimalField(max_digits=20, decimal_places=2, blank=True)
-    price = models.DecimalField(max_digits=20, decimal_places=2, blank=True)
+    total_price = models.DecimalField(max_digits=20, decimal_places=2, blank=True)
+    order_reference = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         db_table = 'order_item'
