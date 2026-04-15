@@ -1,11 +1,16 @@
 from django.shortcuts import render
+from datetime import date
 from django.http import JsonResponse
 from django.views.generic import View
 from django.db.models import Count, Q, Case, When, IntegerField
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from datetime import date
-from system.models import Farmer, Clan
+from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncWeek
+
+from sales.models import Order
+from messaging.models import SmsLog
+from system.models import Farmer, Clan, Collection
 
 
 def dashboard_callback(request, context):
@@ -98,11 +103,17 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             date_of_birth__lte=date(today.year - 35, today.month, today.day)
         ).count()
 
+        orders = Order.objects.all().count()
+        collections = Collection.objects.all().count()
+        sms_count = SmsLog.objects.filter(status='SENT').count()
+
         data = {
             "total_farmers": farmers.count(),
             "total_male": farmers.filter(gender='Male').count(),
             "total_female": farmers.filter(gender='Female').count(),
-
+            "orders": orders,
+            "collections": collections,
+            "sms_count": sms_count,
             "total_clans_with_farmers": Clan.objects.annotate(
                 farmer_count=Count('farmer')
             ).filter(farmer_count__gt=0).count(),
@@ -156,4 +167,75 @@ class GenderStatsView(View):
         return JsonResponse({
             "labels": list(base.keys()),
             "data": list(base.values())
+        })
+
+
+class DemographicStatsView(View):
+    def get(self, request, *args, **kwargs):
+        base = {'Male': 0, 'Female': 0}
+
+        data = Farmer.objects.values('gender').annotate(total=Count('id'))
+
+        for item in data:
+            gender = item['gender']
+            if gender in base:
+                base[gender] = item['total']
+
+        return JsonResponse({
+            "labels": list(base.keys()),
+            "data": list(base.values())
+        })
+
+
+class FarmerMonthlyStatsView(View):
+    def get(self, request, *args, **kwargs):
+        data = (
+            Farmer.objects
+            .annotate(month=TruncMonth('created_at'))
+            .values('month')
+            .annotate(total=Count('id'))
+            .order_by('month')
+        )
+
+        labels = []
+        values = []
+
+        for item in data:
+            labels.append(item['month'].strftime('%b %Y'))  # Jan 2026
+            values.append(item['total'])
+
+        return JsonResponse({
+            "labels": labels,
+            "datasets": [{
+                "label": "Farmers per Month",
+                "data": values,
+                "backgroundColor": "#28a745"
+            }]
+        })
+
+
+class FarmerWeeklyStatsView(View):
+    def get(self, request, *args, **kwargs):
+        data = (
+            Farmer.objects
+            .annotate(week=TruncWeek('created_at'))
+            .values('week')
+            .annotate(total=Count('id'))
+            .order_by('week')
+        )
+
+        labels = []
+        values = []
+
+        for item in data:
+            labels.append(item['week'].strftime('Week %W (%b %d)'))
+            values.append(item['total'])
+
+        return JsonResponse({
+            "labels": labels,
+            "datasets": [{
+                "label": "Farmers per Week",
+                "data": values,
+                "backgroundColor": "#007bff"
+            }]
         })

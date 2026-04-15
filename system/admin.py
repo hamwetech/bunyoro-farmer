@@ -128,19 +128,19 @@ class FarmerAdmin(admin.ModelAdmin):
 
 @admin.register(Clan)
 class ClanAdmin(admin.ModelAdmin):
-    list_display = ('name', 'totem')
+    list_display = ('name', 'totem', 'farmer_count')
     search_fields = ('name',)
 
 
 @admin.register(Cooperative)
 class CooperativeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'code', 'district', 'county' ,'sub_county')
+    list_display = ('name', 'code', 'district', 'county' ,'sub_county', 'farmer_count')
     search_fields = ('name',)
 
 
 @admin.register(FarmerGroup)
 class FarmerGroupAdmin(admin.ModelAdmin):
-    list_display = ('name', 'cooperative', 'district', 'county' ,'sub_county')
+    list_display = ('name', 'cooperative', 'district', 'county' ,'sub_county', 'farmer_count')
     search_fields = ('name',)
 
 

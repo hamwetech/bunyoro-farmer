@@ -19,6 +19,10 @@ class Clan(TimeStampMixin):
     def __str__(self):
         return self.name
 
+    @property
+    def farmer_count(self):
+        return Farmer.objects.filter(clan=self).count()
+
 
 class Cooperative(TimeStampMixin):
     name = models.CharField(max_length=150, unique=True)
@@ -32,6 +36,10 @@ class Cooperative(TimeStampMixin):
 
     def __str__(self):
         return self.name
+
+    @property
+    def farmer_count(self):
+        return Farmer.objects.filter(cooperative=self).count()
 
 
 class FarmerGroup(TimeStampMixin):
@@ -47,6 +55,10 @@ class FarmerGroup(TimeStampMixin):
 
     def __str__(self):
         return self.name
+
+    @property
+    def farmer_count(self):
+        return Farmer.objects.filter(farmer_group=self).count()
 
 
 class Farmer(models.Model):

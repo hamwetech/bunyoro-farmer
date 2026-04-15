@@ -1,187 +1,180 @@
 {% load i18n static jazzmin admin_urls %}
 
 <nav class="mt-2">
-                        <ul class="nav nav-pills nav-sidebar flex-column {{ jazzmin_ui.sidebar_list_classes }}" data-widget="treeview" role="menu" data-collapsible="false">
+    <ul class="nav nav-pills nav-sidebar flex-column {{ jazzmin_ui.sidebar_list_classes }}" data-widget="treeview" role="menu" data-collapsible="false">
+        <li class="nav-item">
+            <a href="{% url 'dashboard' %}" class="nav-link">
+                <i class="nav-icon fas fa-th-large"></i>
+                <p>{% trans 'Dashboard' %}</p>
+            </a>
+        </li>
+        {% if perms.system.view_cooperative %}
+        <li class="nav-item">
+            <a href="{% url 'admin:system_cooperative_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-building"></i>
+                <p>{% trans 'Cooperative' %}</p>
+            </a>
+        </li>
+        {% endif %}
+        {% if perms.system.view_farmergroup %}
+        <li class="nav-item">
+            <a href="{% url 'admin:system_farmergroup_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-people-group"></i>
+                <p>{% trans 'Farmer Group' %}</p>
+            </a>
+        </li>
+        {% endif %}
+        {% if perms.system.view_clan %}
+        <li class="nav-item">
+            <a href="{% url 'admin:system_clan_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-house"></i>
+                <p>{% trans 'Clan' %}</p>
+            </a>
+        </li>
+        {% endif %}
+        {% if perms.system.view_farmer %}
+        <li class="nav-item">
+            <a href="{% url 'admin:system_farmer_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>{% trans 'Farmer' %}</p>
+            </a>
+        </li>
+        {% endif %}
+        {% if perms.system.view_collection %}
+        <li class="nav-item">
+            <a href="{% url 'admin:system_collection_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-box-open"></i>
+                <p>{% trans 'Collection' %}</p>
+            </a>
+        </li>
+        {% endif %}
+         {% if perms.sales.view_order %}
+        <li class="nav-item">
+            <a href="{% url 'admin:sales_order_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-cart-shopping"></i>
+                <p>{% trans 'Order' %}</p>
+            </a>
+        </li>
+        {% endif %}
 
-<!--                            <li class="nav-item">-->
-<!--                                <a href="{% url 'admin:index' %}" class="nav-link">-->
-<!--                                    <i class="nav-icon fas fa-th-large"></i>-->
-<!--                                    <p>{% trans 'Dashboard' %}</p>-->
-<!--                                </a>-->
-<!--                            </li>-->
-                            <li class="nav-item">
-                                <a href="{% url 'dashboard' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-th-large"></i>
-                                    <p>{% trans 'Dashboard' %}</p>
-                                </a>
-                            </li>
-                            {% if perms.system.view_cooperative %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:system_cooperative_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-building"></i>
-                                    <p>{% trans 'Cooperative' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% if perms.system.view_farmergroup %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:system_farmergroup_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-people-group"></i>
-                                    <p>{% trans 'Farmer Group' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% if perms.system.view_clan %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:system_clan_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-house"></i>
-                                    <p>{% trans 'Clan' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% if perms.system.view_farmer %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:system_farmer_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-users"></i>
-                                    <p>{% trans 'Farmer' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% if perms.system.view_collection %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:system_collection_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-box-open"></i>
-                                    <p>{% trans 'Collection' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                             {% if perms.sales.view_order %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:sales_order_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-cart-shopping"></i>
-                                    <p>{% trans 'Order' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
+        {% if perms.activity.view_thematicarea %}
+        <li class="nav-header">TRAINING</li>
+        {% if perms.activity.view_thematicarea %}
+        <li class="nav-item">
+            <a href="{% url 'admin:activity_thematicarea_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-book-open-reader"></i>
+                <p>{% trans 'Thematic Area' %}</p>
+            </a>
+        </li>
+        {% endif %}
+         {% if perms.activity.view_trainingsession %}
+        <li class="nav-item">
+            <a href="{% url 'admin:activity_trainingsession_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-chalkboard-user"></i>
+                <p>{% trans 'Training Session' %}</p>
+            </a>
+        </li>
+        {% endif %}
+        {% endif %}
 
-                            {% if perms.activity.view_thematicarea %}
-                            <li class="nav-header">TRAINING</li>
-                            {% if perms.activity.view_thematicarea %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:activity_thematicarea_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-book-open-reader"></i>
-                                    <p>{% trans 'Thematic Area' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                             {% if perms.activity.view_trainingsession %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:activity_trainingsession_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-chalkboard-user"></i>
-                                    <p>{% trans 'Training Session' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% endif %}
+        {% if perms.messaging.view_smslog %}
+        <li class="nav-header">MESSAGING</li>
 
-                            {% if perms.messaging.view_smslog %}
-                            <li class="nav-header">MESSAGING</li>
+        <li class="nav-item">
+            <a href="{% url 'admin:messaging_smslog_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-message"></i>
+                <p>{% trans 'SMS' %}</p>
+            </a>
+        </li>
+        {% endif %}
 
-                            <li class="nav-item">
-                                <a href="{% url 'admin:messaging_smslog_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-message"></i>
-                                    <p>{% trans 'SMS' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-
-                            {% if perms.sales.view_item %}
-                            <li class="nav-header">SALES MANAGEMENT</li>
-                            {% if perms.sales.view_supplier %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:sales_supplier_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-store"></i>
-                                    <p>{% trans 'Supplier' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% if perms.sales.view_category %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:sales_category_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-layer-group"></i>
-                                    <p>{% trans 'Categories' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% if perms.sales.view_item %}
-                            <li class="nav-item">
-                                <a href="{% url 'admin:sales_item_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-tag"></i>
-                                    <p>{% trans 'Item' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% endif %}
+        {% if perms.sales.view_item %}
+        <li class="nav-header">SALES MANAGEMENT</li>
+        {% if perms.sales.view_supplier %}
+        <li class="nav-item">
+            <a href="{% url 'admin:sales_supplier_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-store"></i>
+                <p>{% trans 'Supplier' %}</p>
+            </a>
+        </li>
+        {% endif %}
+        {% if perms.sales.view_category %}
+        <li class="nav-item">
+            <a href="{% url 'admin:sales_category_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-layer-group"></i>
+                <p>{% trans 'Categories' %}</p>
+            </a>
+        </li>
+        {% endif %}
+        {% if perms.sales.view_item %}
+        <li class="nav-item">
+            <a href="{% url 'admin:sales_item_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-tag"></i>
+                <p>{% trans 'Item' %}</p>
+            </a>
+        </li>
+        {% endif %}
+        {% endif %}
 
 
-                            {% if perms.conf.view_crop or perms.conf.view_district  %}
-                            <li class="nav-header">LOCATION AND FARMING</li>
+        {% if perms.conf.view_crop or perms.conf.view_district  %}
+        <li class="nav-header">LOCATION AND FARMING</li>
 
-                            <li class="nav-item">
-                                <a href="{% url 'admin:conf_crop_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-seedling"></i>
-                                    <p>{% trans 'Crops' %}</p>
-                                </a>
-                            </li>
+        <li class="nav-item">
+            <a href="{% url 'admin:conf_crop_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-seedling"></i>
+                <p>{% trans 'Crops' %}</p>
+            </a>
+        </li>
 
-                            <li class="nav-item">
-                                <a href="{% url 'admin:conf_district_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-location-dot"></i>
-                                    <p>{% trans 'District' %}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'admin:conf_county_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-location-dot"></i>
-                                    <p>{% trans 'County' %}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'admin:conf_subcounty_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-location-dot"></i>
-                                    <p>{% trans 'Sub County' %}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'admin:conf_parish_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-location-dot"></i>
-                                    <p>{% trans 'Parish' %}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'admin:conf_village_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-location-crosshairs"></i>
-                                    <p>{% trans 'Village' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
+        <li class="nav-item">
+            <a href="{% url 'admin:conf_district_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-location-dot"></i>
+                <p>{% trans 'District' %}</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'admin:conf_county_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-location-dot"></i>
+                <p>{% trans 'County' %}</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'admin:conf_subcounty_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-location-dot"></i>
+                <p>{% trans 'Sub County' %}</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'admin:conf_parish_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-location-dot"></i>
+                <p>{% trans 'Parish' %}</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'admin:conf_village_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-location-crosshairs"></i>
+                <p>{% trans 'Village' %}</p>
+            </a>
+        </li>
+        {% endif %}
 
-                            {% if request.is_superuser%}
-                            <li class="nav-header">USER MANAGEMENT</li>
-                            <li class="nav-item">
-                                <a href="{% url 'admin:auth_user_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-users"></i>
-                                    <p>{% trans 'User' %}</p>
-                                </a>
-                            </li>
+        {% if request.user.is_superuser%}
+        <li class="nav-header">USER MANAGEMENT</li>
+        <li class="nav-item">
+            <a href="{% url 'admin:auth_user_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>{% trans 'User' %}</p>
+            </a>
+        </li>
 
-                            <li class="nav-item">
-                                <a href="{% url 'admin:auth_group_changelist' %}" class="nav-link">
-                                    <i class="nav-icon fas fa-users"></i>
-                                    <p>{% trans 'Access Control' %}</p>
-                                </a>
-                            </li>
-                            {% endif %}
+        <li class="nav-item">
+            <a href="{% url 'admin:auth_group_changelist' %}" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>{% trans 'Access Control' %}</p>
+            </a>
+        </li>
+        {% endif %}
 
 
 
@@ -225,5 +218,5 @@
 <!--                                    </li>-->
 <!--                                {% endfor %}-->
 <!--                            {% endif %}-->
-                        </ul>
-                    </nav>
+    </ul>
+</nav>
