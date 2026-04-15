@@ -19,3 +19,9 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     print("SIGNAL FIRED")
     if created:
         Token.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def refresh_auth_token(sender, instance=None, **kwargs):
+    Token.objects.filter(user=instance).delete()
+    Token.objects.create(user=instance)
