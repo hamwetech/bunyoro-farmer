@@ -9,7 +9,7 @@ from conf.utils import log_debug, log_error
 class MessagingOperations():
 
     def __init__(self):
-        self.password = '4PsAhGj9nBKiBTLVHx5h'
+        self.password = 'IvJhk4THhCMPBkjfC8R4'
         self.user = 'admin'
 
     def sendOneSMS(self, msisdn, message):

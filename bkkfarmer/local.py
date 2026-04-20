@@ -15,3 +15,11 @@ DATABASES = {
         },
     }
 }
+
+EMAIL_USE_TLS   = True
+EMAIL_HOST      = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'tech@hamwe.org'
+EMAIL_HOST_PASSWORD = 'priv mxdb ujkh cprr'
+DEFAULT_FROM_EMAIL  = 'tech@hamwe.org'
+SERVER_EMAIL = 'tech@hamwe.org'
+EMAIL_PORT      = 587

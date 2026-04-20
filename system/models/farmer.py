@@ -179,3 +179,15 @@ class Collection(TimeStampMixin):
 
     class Meta:
         db_table = 'collection'
+
+    def __str__(self):
+        return self.collection_reference
+
+
+class SavingsTransaction(TimeStampMixin):
+    farmer = models.ForeignKey(Farmer, null=True, blank=True, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=20, decimal_places=2)
+    balance_after = models.DecimalField(max_digits=20, decimal_places=2, editable=False)
+
+    class Meta:
+        db_table = 'savings_transaction'

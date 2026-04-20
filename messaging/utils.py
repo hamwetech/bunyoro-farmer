@@ -1,6 +1,42 @@
 import requests
+from django.conf import settings
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+
+from conf.utils import log_debug
 from messaging.models import SmsLog
-from messaging.api.hamwesms import MessagingOperations as operator
+from messaging.api.hamwesms import MessagingOperations
+
+sms = MessagingOperations()
+
+
+def send_email_with_footer(to_email, subject, content):
+    """
+    Send email with a standard footer using HTML template
+    """
+    try:
+        html_body = render_to_string(
+            "emails/base_email.html",
+            {"content": content}
+        )
+
+        email = EmailMessage(
+            subject=subject,
+            body=html_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[to_email],
+        )
+
+        email.content_subtype = "html"  # important!
+
+        email.send()
+
+        log_debug(f"Email sent to {to_email}")
+        return {"status": "SUCCESS"}
+
+    except Exception as e:
+        log_debug(f"Email error: {e}", exc_info=True)
+        return {"status": "FAILED", "error": str(e)}
 
 
 def send_sms(recipient: str, message: str, sender: str = None):
@@ -10,10 +46,8 @@ def send_sms(recipient: str, message: str, sender: str = None):
             "message": message,
             "sender": sender
         }
-        # Example: POST to your SMS gateway
-        # response = requests.post("https://sms-api.example.com/send", json=payload)
-        # response_data = response.json()
-        response = operator.send_message(recipient, message)
+
+        response = sms.send_message(recipient, message)
         status = "SUCCESS" if response == "SUCCESS" else "FAILED"
 
         # Log SMS attempt
@@ -21,11 +55,11 @@ def send_sms(recipient: str, message: str, sender: str = None):
             recipient=recipient,
             message=message,
             status=status,
-            api_response=response_data,
+            api_response=response,
             sender=sender
         )
 
-        return response_data
+        return response
 
     except Exception as e:
         # Log exception

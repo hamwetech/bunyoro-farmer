@@ -12,7 +12,7 @@ class UserProfileInline(admin.StackedInline):
     verbose_name_plural = 'Profile'
     fk_name = 'user'
     extra = 1
-    fields = ('phone_number', )
+    exclude = ('create_date',)
 
 
 # -------------------------

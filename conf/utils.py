@@ -3,6 +3,9 @@ import logging
 import string
 import traceback
 import uuid
+import csv
+from django.apps import apps
+from django.http import HttpResponse
 import random, string
 from django import forms
 from django.core.mail import send_mail
@@ -143,7 +146,6 @@ def bootstrapify(cls):
         if isinstance(field.widget, (forms.SelectMultiple)):
             field.widget.attrs['class'] = ''
 
-
 def send_email_with_logo(message, recipient, subject):
     # Get user email and other details
     user_email = recipient
@@ -163,3 +165,37 @@ def send_email_with_logo(message, recipient, subject):
         fail_silently=False,
         html_message=html_message,
     )
+
+
+def download_model_data(request, app_label, model_name):
+    """
+    Generic function to download any model data as CSV
+    Example: /download/app_name/ModelName/
+    """
+    try:
+        model = apps.get_model(app_label, model_name)
+
+        if model is None:
+            return HttpResponse("Model not found", status=404)
+
+        queryset = model.objects.all()
+
+        # Create response
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{model_name}.csv"'
+
+        writer = csv.writer(response)
+
+        # Get field names dynamically
+        fields = [field.name for field in model._meta.fields]
+        writer.writerow(fields)
+
+        # Write data
+        for obj in queryset:
+            row = [getattr(obj, field) for field in fields]
+            writer.writerow(row)
+
+        return response
+
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}", status=500)

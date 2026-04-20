@@ -82,6 +82,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
         today = date.today()
         farmers = Farmer.objects.all()
+        orders = Order.objects.all()
+        collections = Collection.objects.all()
+
+        if self.request.user.userprofile.clan:
+            clan = self.request.user.userprofile.clan
+            farmers = farmers.filter(clan=clan)
+            collections = collections.filter(farmer__clan=clan)
+            orders = orders.filter(farmer__clan=clan)
 
         youth_male = farmers.filter(
             gender='Male',
@@ -103,8 +111,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             date_of_birth__lte=date(today.year - 35, today.month, today.day)
         ).count()
 
-        orders = Order.objects.all().count()
-        collections = Collection.objects.all().count()
+        orders = orders.count()
+        collections = collections.count()
         sms_count = SmsLog.objects.filter(status='SENT').count()
 
         data = {
