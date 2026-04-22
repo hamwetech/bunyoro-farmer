@@ -1,9 +1,10 @@
 import openpyxl
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
 from .forms import ExcelUploadForm
-from .models import District, County, SubCounty, Parish, Village
+from .models import District, County, SubCounty, Parish, Village, ProductVariation, ProductVariationPrice
 
 
 def upload_locations(request):
@@ -35,3 +36,8 @@ def upload_locations(request):
         form = ExcelUploadForm()
 
     return render(request, "admin/upload_locations.html", {"form": form, "subtitle": "Location", "title": "Location"})
+
+
+def get_product_price(request, pk):
+    product = ProductVariationPrice.objects.get(product__id=pk)
+    return JsonResponse({'price': str(product.price)})

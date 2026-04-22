@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'messaging',
     'sales',
     'activity',
-    'user'
+    'user',
+    'payments'
 
 ]
 

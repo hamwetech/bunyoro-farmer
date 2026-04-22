@@ -9,7 +9,8 @@ class TimeStampMixin(models.Model):
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         editable=False
     )
 

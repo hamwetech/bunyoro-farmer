@@ -15,7 +15,7 @@ from django.conf import settings
 from django.contrib.admin.utils import NestedObjects
 from django.utils.text import capfirst
 from django.utils.encoding import force_str
-from conf.models import MessageTemplates, SystemSettings
+from conf.models import MessageTemplates, SystemConfiguration
 
 log = logging.getLogger("bkk")
 PHONE_REGEX = re.compile(r'^(0|256|\+256|)(3|4|7)([0-9])(\d{7,7})$')

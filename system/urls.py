@@ -1,8 +1,9 @@
 from django.urls import path, include
+from system.views import ClanUploadView, GenderStatsView, FarmerMonthlyStatsView, FarmerWeeklyStatsView, export_farmers_excel
 
-from system.views import ClanUploadView, GenderStatsView, FarmerMonthlyStatsView, FarmerWeeklyStatsView
 
 urlpatterns = [
+    path('export-farmers/', export_farmers_excel, name='export-excel'),
     path('dashboard/gender/', GenderStatsView.as_view(), name='gender-stats'),
     path('upload/clan/', ClanUploadView.as_view(), name='clan-upload'),
     path('farmers/monthly/', FarmerMonthlyStatsView.as_view(), name='bar-farmers-monthly'),

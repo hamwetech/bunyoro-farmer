@@ -162,7 +162,7 @@ class ProductVariation(models.Model):
 
 
 class ProductVariationPrice(models.Model):
-    product = models.ForeignKey(ProductVariation, related_name='variation_price', on_delete=models.CASCADE)
+    product = models.OneToOneField(ProductVariation, related_name='variation_price', on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, null=True, blank=True, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -189,8 +189,8 @@ class ProductVariationPriceLog(models.Model):
 
     class Meta:
         db_table = 'product_variation_price_log'
-        verbose_name = 'Product Price'
-        verbose_name_plural = 'Product Prices'
+        verbose_name = 'Product Price Log'
+        verbose_name_plural = 'Product Price Logs'
 
     def __unicode__(self):
         return "%s" % self.product
@@ -202,17 +202,6 @@ def save_price_log(sender, instance, **kwargs):
                                                 price=instance.price,
                                             unit=instance.unit,
                                             created_by=instance.created_by)
-
-
-class SystemSettings(models.Model):
-    send_message = models.BooleanField(default=0)
-    mobile_money_payment = models.BooleanField(default=0)
-
-    class Meta:
-        db_table = 'system_settings'
-
-    def __str__(self):
-        return u'Settings'
 
 
 class MessageTemplates(models.Model):
@@ -233,6 +222,41 @@ class MessageTemplates(models.Model):
 
     def __str__(self):
         return u'Messages Template'
+
+
+class SMSTemplate(models.Model):
+    class TemplateCode(models.TextChoices):
+        REGISTRATION = 'REGISTRATION' 'REGISTRATION'
+        COLLECTION = 'COLLECTION' 'COLLECTION'
+        ORDER = 'ORDER' 'ORDER'
+        ORDER_CONFIRMATION = 'ORDER_CONFIRMATION' 'ORDER_CONFIRMATION'
+        ORDER_SHIPPING = 'ORDER_SHIPPING' 'ORDER_SHIPPING'
+        ORDER_PICKING_READY = 'ORDER_PICKING_READY' 'ORDER_PICKING_READY'
+
+
+    code = models.CharField(max_length=120, unique=True, choices=TemplateCode.choices, null=True)
+    template = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User,
+                                   on_delete=models.CASCADE,
+                                   null = True,
+                                   blank = True,
+                                   editable = False
+                                   )
+
+    class Meta:
+        db_table = 'sms_template'
+
+
+class SystemConfiguration(models.Model):
+    send_sms = models.BooleanField(default=0)
+    send_email = models.BooleanField(default=0)
+    report_recipient_email = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'system_configuration'
+
 
 
 class EmailConfiguration(models.Model):

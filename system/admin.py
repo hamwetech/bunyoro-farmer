@@ -179,3 +179,5 @@ class CollectionAdmin(admin.ModelAdmin):
     date_hierarchy = "collection_date"
 
     ordering = ("-collection_date",)
+
+    # readonly_fields = ('unit_price', 'total_price')

@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from conf.utils import log_debug
 from messaging.models import SmsLog
 from messaging.api.hamwesms import MessagingOperations
+from conf.models import SystemConfiguration
 
 sms = MessagingOperations()
 
@@ -41,6 +42,12 @@ def send_email_with_footer(to_email, subject, content):
 
 def send_sms(recipient: str, message: str, sender: str = None):
     try:
+
+        conf = SystemConfiguration.objects.all().first()
+        if not conf.send_sms:
+            log_debug('SMS is not enabled')
+            return
+
         payload = {
             "to": recipient,
             "message": message,

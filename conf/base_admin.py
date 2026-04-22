@@ -13,3 +13,8 @@ class BaseAdmin(admin.ModelAdmin):
             fields.insert(0, "id")
 
         return fields[:6]  # show first 6 fields
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:  # only when creating
+            obj.created_by = request.user
+        super().save_model(request, obj, form, change)

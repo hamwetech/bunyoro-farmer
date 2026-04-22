@@ -35,6 +35,7 @@ urlpatterns = [
 
     path('', DashboardView.as_view(), name='dashboard'),
     path('', include('system.urls')),
+    path('', include('conf.urls')),
 ]
 
 if settings.DEBUG:

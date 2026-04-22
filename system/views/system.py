@@ -247,3 +247,68 @@ class FarmerWeeklyStatsView(View):
                 "backgroundColor": "#007bff"
             }]
         })
+
+
+import openpyxl
+from django.http import HttpResponse
+from system.models import Farmer
+
+def export_farmers_excel(request):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Farmers"
+
+    # 🔹 Header
+    headers = [
+        "Member ID", "Name", "Gender", "Phone",
+        "District", "County", "SubCounty", "Parish",
+        "Village", "Account Balance", "Savings",
+        "DOB", "Created At"
+    ]
+
+    ws.append(headers)
+
+    # 🔹 Data
+    farmers = Farmer.objects.select_related(
+        'district', 'county', 'sub_county', 'parish'
+    ).all()
+
+    for f in farmers:
+        name = f"{f.title or ''} {f.first_name or ''} {f.surname or ''}".strip()
+
+        ws.append([
+            f.member_id,
+            name,
+            f.gender,
+            f.phone_number,
+            f.district.name if f.district else "",
+            f.county.name if f.county else "",
+            f.sub_county.name if f.sub_county else "",
+            f.parish.name if f.parish else "",
+            f.village,
+            float(f.account_balance or 0),
+            float(f.savings_balance or 0),
+            f.date_of_birth.strftime('%Y-%m-%d') if f.date_of_birth else "",
+            f.created_at.strftime('%Y-%m-%d %H:%M')
+        ])
+
+    # 🔹 Auto column width
+    for col in ws.columns:
+        max_length = 0
+        col_letter = col[0].column_letter
+        for cell in col:
+            try:
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+            except:
+                pass
+        ws.column_dimensions[col_letter].width = max_length + 2
+
+    # 🔹 Response
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename=farmers.xlsx'
+
+    wb.save(response)
+    return response
