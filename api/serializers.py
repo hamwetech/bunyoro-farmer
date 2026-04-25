@@ -148,7 +148,7 @@ class ProductVariationSerializer(serializers.ModelSerializer):
 class ProductVariationPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariationPrice
-        field = '__all__'
+        fields = '__all__'
 
 
 class SupplierSerializer(serializers.ModelSerializer):
