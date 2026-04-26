@@ -171,6 +171,7 @@ class Collection(TimeStampMixin):
     unit_price = models.DecimalField(max_digits=20, decimal_places=2)
     total_price = models.DecimalField(max_digits=20, decimal_places=2)
     repay_loan = models.BooleanField(default=False)
+    gps_coordinates =  models.CharField(max_length=255, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.collection_reference:

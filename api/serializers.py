@@ -184,7 +184,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['farmer_reference', 'order_reference', 'total_amount', 'order_date', 'items']
+        fields = ['farmer_reference', 'order_reference', 'total_amount', 'order_date','gps_coordinates', 'items']
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')
@@ -213,9 +213,29 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class CollectionSerializer(serializers.ModelSerializer):
+    farmer_reference = serializers.CharField(write_only=True)
+
     class Meta:
         model = Collection
         fields = '__all__'
+        extra_kwargs = {
+            'farmer': {'required': False},  # we will set it manually
+        }
+
+    def create(self, validated_data):
+        farmer_ref = validated_data.pop('farmer_reference', None)
+
+        # Ignore farmer if passed directly
+        validated_data.pop('farmer', None)
+
+        # Resolve farmer using reference
+        farmer = None
+        if farmer_ref:
+            farmer = Farmer.objects.filter(uuid=farmer_ref).first()
+
+        validated_data['farmer'] = farmer
+
+        return super().create(validated_data)
 
 
 class ThematicAreaSerializer(serializers.ModelSerializer):

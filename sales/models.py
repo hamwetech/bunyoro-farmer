@@ -55,6 +55,7 @@ class Order(TimeStampMixin):
     delivery_reject_date = models.DateTimeField(null=True, blank=True)
     delivery_reject_reason = models.CharField(max_length=120, null=True, blank=True)
     collect_date = models.DateTimeField(null=True, blank=True)
+    gps_coordinates = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         db_table = 'member_order'
