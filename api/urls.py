@@ -48,13 +48,15 @@ router.register(r'training-attendance', TrainingAttendanceViewSet, basename='tra
 router.register(r'external-trainer', ExternalTrainerViewSet, basename='external-trainer')
 
 urlpatterns = [
-    path('authenticate/', AuthenticationView.as_view(), name="authenticate"),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('titles/', TitleListView.as_view(), name='titles'),
-    path('sync-farmers/', FarmerBulkSyncView.as_view(), name='sync-farmers'),
-    path('orders/bulk-create/', OrderCreateView.as_view(), name='order-create'),
-    path("app/latest/", LatestVersionAPI.as_view()),
-    path("app/download/<int:version_code>/", download_apk),
+   path('authenticate/', AuthenticationView.as_view(), name="authenticate"),
+   path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+   path('titles/', TitleListView.as_view(), name='titles'),
+   path('sync-farmers/', FarmerBulkSyncView.as_view(), name='sync-farmers'),
+   path('orders/bulk-create/', OrderCreateView.as_view(), name='order-create'),
+   path("app/latest/", LatestVersionAPI.as_view()),
+   path("app/download/<int:version_code>/", download_apk),
+   path("check-token/", CheckTokenView.as_view(), name="check_token"),
+
     # path('redoc/', TemplateView.as_view(
     #         template_name='api/redoc.html',
     #         extra_context={'schema_url':'openapi-schema'}

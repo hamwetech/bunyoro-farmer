@@ -8,6 +8,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.gis.geos import Point
+from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import FileUploadParser
 from rest_framework.renderers import JSONRenderer
@@ -568,3 +569,32 @@ class LatestVersionAPI(APIView):
 def download_apk(request, version_code):
     app = AppVersion.objects.get(version_code=version_code)
     return FileResponse(app.apk_file.open(), as_attachment=True)
+
+
+class CheckTokenView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        token_key = request.data.get("token")
+
+        if not token_key:
+            return Response(
+                {"valid": False, "message": "No token provided"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            token = Token.objects.get(key=token_key)
+            user = token.user
+
+            return Response({
+                "valid": True,
+                "user_id": user.id,
+                "username": user.username
+            }, status=status.HTTP_200_OK)
+
+        except Token.DoesNotExist:
+            return Response(
+                {"valid": False, "message": "Invalid token"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
