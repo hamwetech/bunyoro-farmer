@@ -289,8 +289,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
-    # serializer_class = ItemSerializer
-    serializer = ItemSerializer(queryset, many=True, context={'request': request})
+    serializer_class = ItemSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
 
 
 class OrderViewSet(viewsets.ModelViewSet):
