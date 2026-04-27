@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 
 from system.models import Collection
 from .forms import FarmerAdminForm
-from .models import Farmer, Clan, Cooperative, FarmerGroup
+from .models import Farmer, Clan, Cooperative, FarmerGroup, AppVersion
 
 
 @admin.register(Farmer)
@@ -181,3 +181,8 @@ class CollectionAdmin(admin.ModelAdmin):
     ordering = ("-collection_date",)
 
     # readonly_fields = ('unit_price', 'total_price')
+
+
+@admin.register(AppVersion)
+class AppVersionAdmin(admin.ModelAdmin):
+    list_display = ("version_name", "version_code", "force_update", "is_active")

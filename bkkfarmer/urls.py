@@ -32,7 +32,7 @@ urlpatterns = [
     path("select2/", include("django_select2.urls")),
     path("upload-locations/", upload_locations, name="upload_locations"),
     path('api/', include(('api.urls', 'api'), namespace='api')),
-
+    path('payments/', include('payments.urls')),
     path('', DashboardView.as_view(), name='dashboard'),
     path('', include('system.urls')),
     path('', include('conf.urls')),

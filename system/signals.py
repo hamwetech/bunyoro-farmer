@@ -24,7 +24,7 @@ def create_collection_transaction(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Farmer)
 def send_registration_sms(sender, instance, created, **kwargs):
-    if created and instance.farmer:
+    if created and instance.id:
         # Send SMS
         try:
             template = SMSTemplate.objects.get(code=SMSTemplate.TemplateCode.REGISTRATION)

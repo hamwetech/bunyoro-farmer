@@ -53,6 +53,8 @@ urlpatterns = [
     path('titles/', TitleListView.as_view(), name='titles'),
     path('sync-farmers/', FarmerBulkSyncView.as_view(), name='sync-farmers'),
     path('orders/bulk-create/', OrderCreateView.as_view(), name='order-create'),
+    path("app/latest/", LatestVersionAPI.as_view()),
+    path("app/download/<int:version_code>/", download_apk),
     # path('redoc/', TemplateView.as_view(
     #         template_name='api/redoc.html',
     #         extra_context={'schema_url':'openapi-schema'}

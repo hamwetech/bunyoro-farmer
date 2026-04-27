@@ -216,5 +216,9 @@ LOGGING = {
     },
 }
 
+PUBLIC_PATHS = [
+    "/download/",
+]
+
 from bkkfarmer.jazzmin import *
 from bkkfarmer.local import *

@@ -20,7 +20,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 
 from api.serializers import *
-from system.models import Farmer
+from system.models import Farmer, AppVersion
 
 
 class AuthenticationView(APIView):
@@ -502,3 +502,23 @@ class ExternalTrainerViewSet(viewsets.ModelViewSet):
 class OrderCreateView(generics.CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+
+
+class LatestVersionAPI(APIView):
+
+    def get(self, request):
+        latest = AppVersion.objects.filter(is_active=True).order_by("-version_code").first()
+
+        return Response({
+            "version_code": latest.version_code,
+            "version_name": latest.version_name,
+            "force_update": latest.force_update,
+            "release_notes": latest.release_notes,
+            "apk_url": request.build_absolute_uri(latest.apk_file.url)
+        })
+
+
+def download_apk(request, version_code):
+    app = AppVersion.objects.get(version_code=version_code)
+    return FileResponse(app.apk_file.open(), as_attachment=True)

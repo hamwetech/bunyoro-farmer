@@ -32,3 +32,5 @@ class TransactionAdmin(admin.ModelAdmin):
     )
 
     list_per_page = 20
+
+

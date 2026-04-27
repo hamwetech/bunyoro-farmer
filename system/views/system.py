@@ -1,16 +1,17 @@
 from django.shortcuts import render
 from datetime import date
 from django.http import JsonResponse
-from django.views.generic import View
+from django.views.generic import View, DetailView
 from django.db.models import Count, Q, Case, When, IntegerField
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import TruncMonth
 from django.db.models.functions import TruncWeek
+from django.shortcuts import get_object_or_404
 
 from sales.models import Order
 from messaging.models import SmsLog
-from system.models import Farmer, Clan, Collection
+from system.models import Farmer, Clan, Collection, AppVersion
 
 
 def dashboard_callback(request, context):
@@ -312,3 +313,11 @@ def export_farmers_excel(request):
 
     wb.save(response)
     return response
+
+class AppDownloadView(DetailView):
+    model = AppVersion
+    template_name = "app/download.html"
+    context_object_name = "app"
+
+    def get_object(self):
+        return AppVersion.objects.filter(is_active=True).order_by("-version_code").first()

@@ -2,6 +2,22 @@ import datetime
 from django.db import transaction as db_transaction
 from payments.models import Transaction
 
+import pandas as pd
+
+def parse_bulk_payment_file(file):
+    df = pd.read_excel(file)
+
+    payments = []
+
+    for _, row in df.iterrows():
+        payments.append({
+            "phone": str(row["phone_number"]),
+            "amount": float(row["amount"]),
+            "reference": str(row["reference"]),
+        })
+
+    return payments
+
 
 def create_transaction(farmer, amount, tx_type, category):
 

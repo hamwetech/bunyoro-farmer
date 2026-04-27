@@ -199,3 +199,12 @@ def download_model_data(request, app_label, model_name):
 
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
+    
+
+def login_not_required(view_func):
+    view_func.login_not_required = True
+    return view_func
+
+def public_view(view_func):
+    view_func.public_view = True
+    return view_func
