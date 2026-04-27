@@ -268,6 +268,12 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
+class ProfessionViewSet(viewsets.ModelViewSet):
+    queryset = Profession.objects.all()
+    http_method_names = ['retrieve', 'get']
+    serializer_class = ProfessionSerializer
+
+
 class ProductVariationViewSet(viewsets.ModelViewSet):
     queryset = ProductVariation.objects.all()
     serializer_class = ProductVariationSerializer

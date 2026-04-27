@@ -196,6 +196,19 @@ class ProductVariationPriceLog(models.Model):
         return "%s" % self.product
 
 
+class Profession(models.Model):
+    name = models.CharField(max_length=120, unique=True)
+    code = models.CharField(max_length=120)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, editable=False)
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'profession'
+        verbose_name = 'Profession'
+        verbose_name_plural = 'Professions'
+
+
 @receiver(post_save, sender=ProductVariationPrice)
 def save_price_log(sender, instance, **kwargs):
     ProductVariationPriceLog.objects.create(product=instance.product,

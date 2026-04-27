@@ -133,6 +133,12 @@ class FarmerGroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProfessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profession
+        fields = '__all__'
+
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product

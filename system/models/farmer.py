@@ -5,7 +5,7 @@ from datetime import date
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from conf.models import District, County, SubCounty, Parish, Crop, ProductVariation
+from conf.models import District, County, Profession, SubCounty, Parish, Crop, ProductVariation
 from system.models.modelmixin import TimeStampMixin
 
 
@@ -63,6 +63,18 @@ class FarmerGroup(TimeStampMixin):
 
 class Farmer(models.Model):
 
+    class EducationLevel(models.TextChoices):
+        NONE = "none", "No Formal Education"
+        PRIMARY = "primary", "Primary"
+        O_LEVEL = "o_level", "O-Level (UCE)"
+        A_LEVEL = "a_level", "A-Level (UACE)"
+        CERTIFICATE = "certificate", "Certificate"
+        DIPLOMA = "diploma", "Diploma"
+        DEGREE = "degree", "Bachelor's Degree"
+        POSTGRAD_DIPLOMA = "pgd", "Postgraduate Diploma"
+        MASTERS = "masters", "Master's Degree"
+        PHD = "phd", "PhD / Doctorate"
+
     TITLE_CHOICES = (
         ('Mr', 'Mr'),
         ('Miss', 'Miss'),
@@ -116,6 +128,10 @@ class Farmer(models.Model):
     qrcode = models.ImageField(upload_to='qrcode', blank=True, null=True)
     card_number = models.CharField(max_length=255, null=True, blank=True)
     create_wallet = models.BooleanField(default=False)
+    education_level = models.CharField(max_length=120, null=True, blank=True, choices=EducationLevel.choices)
+    children_number = models.IntegerField(null=True, blank=True)
+    land_ownership = models.CharField(max_length=120, null=True, blank=True)
+    profession = models.ForeignKey(Profession, null=True, blank=True, on_delete=models.SET_NULL)
     has_flexipay = models.BooleanField(default=0)
     created_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now_add=True)
