@@ -58,6 +58,9 @@ class TrainingSession(TimeStampMixin):
     gps_location = models.CharField(max_length=256, null=True, blank=True)
     training_start = models.DateTimeField()
     training_end = models.DateTimeField()
+    training_image = models.ImageField(upload_to='training', null=True, blank=True)
+    attendance_list_file = models.FileField(upload_to='trainingfiles', null=True, blank=True)
+
 
     class Meta:
         db_table = 'training_session'

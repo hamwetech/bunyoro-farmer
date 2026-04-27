@@ -416,6 +416,47 @@ class TrainingSessionViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(queryset, pk=pk)
         serializer = TrainingSessionSerializer(user)
         return Response(serializer.data)
+    
+    def create(self, request, *args, **kwargs):
+        try:
+            # 🔥 1. Get JSON string safely
+            session_json = request.data.get('session')
+            if not session_json:
+                return Response(
+                    {"error": "Session data is required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            session_data = json.loads(session_json)
+
+            # 🔥 2. Get image (optional)
+            image = request.FILES.get('training_image')
+
+            # 🔥 3. Validate & save
+            serializer = self.get_serializer(data=session_data)
+            serializer.is_valid(raise_exception=True)
+
+            session = serializer.save(
+                training_image=image if image else None
+            )
+
+            # 🔥 4. Return response
+            return Response(
+                self.get_serializer(session).data,
+                status=status.HTTP_201_CREATED
+            )
+
+        except json.JSONDecodeError:
+            return Response(
+                {"error": "Invalid JSON format"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class TrainingAttendanceViewSet(viewsets.ModelViewSet):
