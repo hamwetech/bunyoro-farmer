@@ -11,7 +11,7 @@ from rest_framework.authtoken.models import Token
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="userprofile")
-    profile_photo = models.ImageField(upload_to='user/', null=True)
+    profile_photo = models.ImageField(upload_to='user/', null=True, blank=True)
     phone_number = models.CharField(max_length=11, null=True, blank=True)
     sex = models.CharField('Sex', max_length=10, choices=(('Male', 'Male'), ('Female', 'Female')), null=True,
                            blank=True)
@@ -38,10 +38,10 @@ class UserProfile(models.Model):
         db_table = 'user_profile'
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.get_or_create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         UserProfile.objects.get_or_create(user=instance)
 
 
 # @receiver(post_save, sender=User)
