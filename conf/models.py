@@ -199,7 +199,7 @@ class ProductVariationPriceLog(models.Model):
 class Profession(models.Model):
     name = models.CharField(max_length=120, unique=True)
     code = models.CharField(max_length=120)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, editable=False)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, editable=False, null=True, blank=True)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 

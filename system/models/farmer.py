@@ -63,8 +63,15 @@ class FarmerGroup(TimeStampMixin):
 
 class Farmer(models.Model):
 
+    LAND_TENURE_CHOICES = [
+        ("Customary", "Customary"),
+        ("Freehold", "Freehold"),
+        ("Mailo", "Mailo"),
+        ("Leasehold", "Leasehold"),
+    ]
+
     class EducationLevel(models.TextChoices):
-        NONE = "none", "No Formal Education"
+        NONE = "no_education", "No Formal Education"
         PRIMARY = "primary", "Primary"
         O_LEVEL = "o_level", "O-Level (UCE)"
         A_LEVEL = "a_level", "A-Level (UACE)"
@@ -130,7 +137,7 @@ class Farmer(models.Model):
     create_wallet = models.BooleanField(default=False)
     education_level = models.CharField(max_length=120, null=True, blank=True, choices=EducationLevel.choices)
     children_number = models.IntegerField(null=True, blank=True)
-    land_ownership = models.CharField(max_length=120, null=True, blank=True)
+    land_ownership = models.CharField(max_length=120, null=True, blank=True, choices=LAND_TENURE_CHOICES)
     profession = models.ForeignKey(Profession, null=True, blank=True, on_delete=models.SET_NULL)
     has_flexipay = models.BooleanField(default=0)
     created_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)

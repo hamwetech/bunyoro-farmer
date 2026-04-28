@@ -5,6 +5,7 @@ from django.urls import path
 from django.shortcuts import render, get_object_or_404
 
 from system.models import Collection
+from system.models.application import DeviceHeartBeat
 from .forms import FarmerAdminForm
 from .models import Farmer, Clan, Cooperative, FarmerGroup, AppVersion
 
@@ -27,7 +28,10 @@ class FarmerAdmin(admin.ModelAdmin):
                 "gender",
                 "date_of_birth",
                 "marital_status",
+                "children_number",
                 "clan",
+                "education_level",
+                "profession",
                 "cooperative",
                 "farmer_group",
                 "is_refugee",
@@ -56,6 +60,8 @@ class FarmerAdmin(admin.ModelAdmin):
 
         ("Location", {
             "fields": (
+                "land_acreage",
+                "land_ownership",
                 "district",
                 "county",
                 "sub_county",
@@ -186,3 +192,8 @@ class CollectionAdmin(admin.ModelAdmin):
 @admin.register(AppVersion)
 class AppVersionAdmin(admin.ModelAdmin):
     list_display = ("version_name", "version_code", "force_update", "is_active")
+
+
+@admin.register(DeviceHeartBeat)
+class AppVersionAdmin(admin.ModelAdmin):
+    list_display = ("device", "entry_date", "gps_coodinates")

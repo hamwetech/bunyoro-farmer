@@ -22,6 +22,7 @@ from django.contrib.auth.models import User
 
 from api.serializers import *
 from system.models import Farmer, AppVersion
+from system.models.application import Device, DeviceHeartBeat
 
 
 class AuthenticationView(APIView):
@@ -46,6 +47,8 @@ class AuthenticationView(APIView):
                                 "username": user.username,
                                 "name": user.get_full_name() or "",
                                 "email": user.email,
+                                "is_superuser": user.is_superuser,
+                                "is_active": user.is_active,
                             }
                         }
                     }, status.HTTP_200_OK)
@@ -346,6 +349,12 @@ class TitleListView(APIView):
         return Response(titles)
 
 
+class EducationLevelView(APIView):
+    def get(self, request):
+        titles = [{'value': key, 'label': value} for key, value in Farmer.EducationLevel.choices]
+        return Response(titles)
+
+
 class FarmerViewSet(viewsets.ModelViewSet):
     queryset = Farmer.objects.all()
     serializer_class = FarmerSerializer
@@ -604,3 +613,35 @@ class CheckTokenView(APIView):
                 {"valid": False, "message": "Invalid token"},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+
+
+class HeartBeatAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        user_id = data.get('user_id')
+        device_id = data.get('device_id')
+
+        try:
+            # 1. Ensure User and Device exist
+            user = User.objects.get(id=user_id)
+            
+            # Update or Create the Device entry for this user
+            device, created = Device.objects.update_or_create(
+                device_id=device_id,
+                defaults={'user': user, 'is_active': True}
+            )
+
+            # 2. Create the Heartbeat
+            DeviceHeartBeat.objects.create(
+                device=device,
+                gps_coodinates=data.get('gps_coodinates'),
+                request = data
+                # entry_date is auto_now_add in model
+            )
+
+            return Response({"status": "success"}, status=status.HTTP_201_CREATED)
+        
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -4,7 +4,9 @@
     "pk": 1,
     "fields": {
       "name": "Farmer",
-      "code": "farmer"
+      "code": "farmer",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -12,7 +14,9 @@
     "pk": 2,
     "fields": {
       "name": "Livestock Farmer",
-      "code": "livestock_farmer"
+      "code": "livestock_farmer",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -20,7 +24,9 @@
     "pk": 3,
     "fields": {
       "name": "Agricultural Extension Worker",
-      "code": "agri_extension_worker"
+      "code": "agri_extension_worker",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -28,7 +34,9 @@
     "pk": 4,
     "fields": {
       "name": "Veterinary Officer",
-      "code": "veterinary_officer"
+      "code": "veterinary_officer",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -36,7 +44,9 @@
     "pk": 5,
     "fields": {
       "name": "Doctor",
-      "code": "doctor"
+      "code": "doctor",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -44,7 +54,9 @@
     "pk": 6,
     "fields": {
       "name": "Nurse",
-      "code": "nurse"
+      "code": "nurse",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -52,7 +64,9 @@
     "pk": 7,
     "fields": {
       "name": "Clinical Officer",
-      "code": "clinical_officer"
+      "code": "clinical_officer",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -60,7 +74,9 @@
     "pk": 8,
     "fields": {
       "name": "Teacher",
-      "code": "teacher"
+      "code": "teacher",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -68,7 +84,9 @@
     "pk": 9,
     "fields": {
       "name": "Business Owner",
-      "code": "business_owner"
+      "code": "business_owner",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -76,7 +94,9 @@
     "pk": 10,
     "fields": {
       "name": "Accountant",
-      "code": "accountant"
+      "code": "accountant",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -84,7 +104,9 @@
     "pk": 11,
     "fields": {
       "name": "Software Developer",
-      "code": "software_developer"
+      "code": "software_developer",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -92,7 +114,9 @@
     "pk": 12,
     "fields": {
       "name": "Driver",
-      "code": "driver"
+      "code": "driver",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -100,7 +124,9 @@
     "pk": 13,
     "fields": {
       "name": "Boda Boda Rider",
-      "code": "boda_boda_rider"
+      "code": "boda_boda_rider",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -108,7 +134,9 @@
     "pk": 14,
     "fields": {
       "name": "Police Officer",
-      "code": "police_officer"
+      "code": "police_officer",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -116,7 +144,9 @@
     "pk": 15,
     "fields": {
       "name": "Soldier",
-      "code": "soldier"
+      "code": "soldier",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -124,7 +154,9 @@
     "pk": 16,
     "fields": {
       "name": "Student",
-      "code": "student"
+      "code": "student",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -132,7 +164,9 @@
     "pk": 17,
     "fields": {
       "name": "Unemployed",
-      "code": "unemployed"
+      "code": "unemployed",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -140,7 +174,9 @@
     "pk": 18,
     "fields": {
       "name": "Casual Labourer",
-      "code": "casual_labourer"
+      "code": "casual_labourer",
+      "create_date": "2026-01-01T00:00:00Z",
+      "update_date": "2026-01-01T00:00:00Z"
     }
   }
 ]
